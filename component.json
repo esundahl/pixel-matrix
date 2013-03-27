@@ -1,0 +1,16 @@
+{
+  "name": "matrix",
+  "repo": "esundahl/matrix",
+  "description": "virtual rgb led matrix in the dom",
+  "version": "0.0.1",
+  "keywords": [],
+  "dependencies": {},
+  "development": {},
+  "license": "MIT",
+  "scripts": [
+    "index.js"
+  ],
+  "styles": [
+    "matrix.css"
+  ]
+}
