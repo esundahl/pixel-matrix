@@ -1,0 +1,12 @@
+.matrix {
+	margin: 0;
+	padding: 0;
+	margin: 0 auto;
+}
+
+.matrix .pixel {
+	list-style: none;
+	display: block;
+	border: 1px solid #ccc;
+	float: left;
+}
