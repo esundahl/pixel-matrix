@@ -4,7 +4,9 @@
   "description": "virtual rgb led matrix in the dom",
   "version": "0.0.1",
   "keywords": [],
-  "dependencies": {},
+  "dependencies": {
+    "component/enumerable": "*"
+  },
   "development": {},
   "license": "MIT",
   "scripts": [
