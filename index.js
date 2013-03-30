@@ -4,15 +4,7 @@
  * Dependencies
  */
 
-var enumerable = require('enumerable');
-
-
-/**
- * Private Variables
- */
-
-var pixelTmpl = document.createElement('li');
-pixelTmpl.classList.add('pixel');
+var Pixels = require('./lib/pixels');
 
 
 /**
@@ -24,68 +16,100 @@ pixelTmpl.classList.add('pixel');
  */
 
 function Matrix (x, y, size) {
-	this.matrix = document.createElement('ul');
-	this.matrix.classList.add('matrix');
-	this.matrix.style.width = ((x * size) + (x * 2)) + 'px';
-	this.matrix.style.height = ((y * size) + (y * 2)) + 'px';
-	this.pixels = [];
+
+	this.canvas = document.createElement('canvas');
+ 	this.ctx = this.canvas.getContext('2d');
+ 	this.pixels = [];
+
+	this.canvas.width = x * size;
+	this.canvas.height = x * size;
+
 	for (var i = 0; i < (x * y); i++) {
-		var pixel = pixelTmpl.cloneNode(true);
-		pixel.style.width = size + 'px';
-		pixel.style.height = size + 'px';
-		this.pixels.push(pixel);
-		this.matrix.appendChild(pixel);
+		var pX = i % x;
+		var pY = Math.floor(i / x);
+	  this.pixels.push({
+	  	ctx: this.ctx,
+	  	x: pX,
+	  	y: pY,
+	  	index: i,
+	  	size: size
+	  });
 	}
-	this.x = x;
-	this.y = y;
+
 	return this;
 }
 
 
 /**
- * Returns the matrix dom element
- * @return {Element}
+ * Returns the canvas element
+ * @return {HTMLCanvasElement}
  * @api public
  */
 
 Matrix.prototype.el = function () {
-	return this.matrix;
+	return this.canvas;
 }
 
 
-Matrix.prototype.clear = function () {
-	for (var i = 0; i < this.pixels.length; i++) {
-	  this.pixels[i].style.background = "rgb(255, 255, 255)";
-	}
-}
+/**
+ * Returns all pixels
+ *
+ * @param {Type} name
+ * @return {Type}
+ * @api public
+ */
 
 Matrix.prototype.all = function () {
-	return this.pixels;
+	return new Pixels(this.pixels, this.ctx);
 }
 
-Matrix.prototype.at = function (index, y) {
-	index -= 1;
+/**
+ * Returns the pixel at index or x, y coordinates
+ *
+ * @param {Number} x
+ * @param {TyNumberpe} y
+ * @return {Type}
+ * @api public
+ */
+
+Matrix.prototype.at = function (x, y) {
 	if (y) {
-		y -= 1;
-	  return [this.pixels[index + (y * this.y)]];
+	  return new Pixels([this.pixels[x + (y * this.y)]]);
 	}
-	return [this.pixels[index]];
+	return new Pixels([this.pixels[x]], this.ctx);
 }
 
-Matrix.prototype.row = function (index) {
-	return this.pixels.filter(function (pixel, i) {
-		var g = (index - 1) * this.x;
-		return (i >= g && i < (g + this.x));
+
+/**
+ * Returns pixels in the given row 
+ *
+ * @param {Type} index
+ * @return {Type}
+ * @api public
+ */
+
+Matrix.prototype.row = function (row) {
+	var result = this.pixels.filter(function (pixel, i) {
+		return pixel.y === row;
 	}, this);
+	return new Pixels(result, this.ctx);
 }
 
-Matrix.prototype.column = function (index) {
-	return this.pixels.filter(function (pixel, i) {
-		return ((i + 1) % 8 === index);
+
+/**
+ * Returns pixels in the given column
+ *
+ * @param {Type} name
+ * @return {Type}
+ * @api public
+ */
+
+Matrix.prototype.column = function (column) {
+	var result = this.pixels.filter(function (pixel, i) {
+		return pixel.x === column;
 	}, this);
+	return new Pixels(result, this.ctx);
 }
-
-
 
 
 /**
